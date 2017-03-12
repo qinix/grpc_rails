@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require 'grpc_rails'
+
+options = {
+  host: '0.0.0.0',
+  port: 3001,
+  env: 'development'
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: grpc_server [options]"
+
+  opts.on('-h HOST', '--host HOST', 'Host') do |value|
+    options[:host] = value
+  end
+
+  opts.on('-p PORT', '--port PORT', 'Port') do |value|
+    options[:port] = value
+  end
+
+  opts.on('-e RAILS_ENV', '--environment RAILS_ENV', 'RAILS_ENV') do |value|
+    options[:env] = value
+  end
+end.parse!
+
+GrpcRails::Server.new(options[:host], options[:port], options[:env]).serve
