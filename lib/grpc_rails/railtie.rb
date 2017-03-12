@@ -7,11 +7,13 @@ module GrpcRails
     end
 
     rake_tasks do
-      Dir['tasks/*.rake'].each { |f| load f }
+      current_path = File.expand_path('..', __FILE__)
+      Dir["#{current_path}/tasks/*.rake"].each { |f| load f }
     end
 
     generators do
-      Dir['../rails/generators/*.rb'].each { |f| require_relative f }
+      current_path = File.expand_path('..', __FILE__)
+      Dir["#{current_path}/../rails/generators/*.rb"].each { |f| require_relative f }
     end
   end
 end

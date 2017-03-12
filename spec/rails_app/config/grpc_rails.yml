@@ -1,0 +1,12 @@
+default: &default
+  host: 0.0.0.0
+  port: 3001
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

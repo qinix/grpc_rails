@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 require 'optparse'
+require 'yaml'
 require 'grpc_rails'
+require 'active_support/core_ext/hash'
 
 options = {
   host: '0.0.0.0',
   port: 3001,
-  env: 'development'
+  env: 'development',
+  config: 'config/grpc_rails.yml'
 }
 
 OptionParser.new do |opts|
@@ -22,6 +25,16 @@ OptionParser.new do |opts|
   opts.on('-e RAILS_ENV', '--environment RAILS_ENV', 'RAILS_ENV') do |value|
     options[:env] = value
   end
+
+  opts.on('-c CONFIG_FILE', '--config CONFIG_FILE', 'Config file') do |value|
+    options[:config] = value
+  end
 end.parse!
 
+if File.exists? options[:config]
+  config = YAML.load(File.read(options[:config]))
+  options = config[options[:env]].symbolize_keys.merge(options)
+end
+
+puts "Serving #{options[:env]} in #{options[:host]}:#{options[:port]}"
 GrpcRails::Server.new(options[:host], options[:port], options[:env]).serve
